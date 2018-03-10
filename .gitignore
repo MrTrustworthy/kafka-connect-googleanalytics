@@ -1,0 +1,11 @@
+target/
+testjar/
+
+.idea/
+
+dependency-reduced-pom.xml
+kafka-connect-ga.iml
+
+src/main/resources/connect-standalone.properties
+src/main/resources/test-conf.properties
+src/main/resources/key.json
