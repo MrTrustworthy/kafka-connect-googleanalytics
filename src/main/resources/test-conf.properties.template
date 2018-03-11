@@ -1,0 +1,20 @@
+name=ga-source
+connector.class=GASourceConnector
+tasks.max=1
+view.id=
+topic.prefix=topic-
+fetch.measures=sessions,hits
+fetch.dimensions=pageTitle,dateHourMinute
+polling.frequency=3000
+
+# The following properties are copy-pasted from the key.json you get from google, make sure you remove the "'s and ,'s
+google.type=service_account
+google.project_id=
+google.private_key_id=
+google.private_key=-----BEGIN PRIVATE KEY-----\n....\n-----END PRIVATE KEY-----\n
+google.client_email=
+google.client_id=
+google.auth_uri=https://accounts.google.com/o/oauth2/auth
+google.token_uri=https://accounts.google.com/o/oauth2/token
+google.auth_provider_x509_cert_url=https://www.googleapis.com/oauth2/v1/certs
+google.client_x509_cert_url=
