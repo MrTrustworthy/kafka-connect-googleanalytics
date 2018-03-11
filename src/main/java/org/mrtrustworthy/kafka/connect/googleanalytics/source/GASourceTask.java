@@ -61,7 +61,7 @@ public class GASourceTask extends SourceTask {
     public List<SourceRecord> poll() throws InterruptedException {
         final ArrayList<SourceRecord> records = new ArrayList<>();
         this.fetcher.maybeInitializeAnalyticsReporting();
-        Report report = null;
+        Report report;
         try {
             report = this.fetcher.getReport();
         } catch (IOException e) {

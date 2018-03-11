@@ -62,14 +62,13 @@ class GAReportFetcherTest {
             gafetcher.maybeInitializeAnalyticsReporting();
             Report report = gafetcher.getReport();
             assertNotNull(report);
-            System.out.println(report);
-
+            System.out.println("Report: " + report);
 
             repParser.maybeUpdateSchema(report, conf.getTopicName());
-            System.out.println(Objects.toString(repParser.getSchema()));
+            System.out.println("Schema: " + Objects.toString(repParser.getSchema()));
 
             List<Struct> structs = repParser.createStructsOffReport(report);
-            System.out.println(Objects.toString(structs));
+            System.out.println("Structs: " + Objects.toString(structs));
 
         } catch (IOException e) {
             assertTrue(false);
