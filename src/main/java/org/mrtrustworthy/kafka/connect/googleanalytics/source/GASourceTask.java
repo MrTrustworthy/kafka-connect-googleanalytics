@@ -4,7 +4,6 @@ import com.google.api.services.analyticsreporting.v4.model.Report;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
-import org.apache.kafka.connect.source.SourceTaskContext;
 import org.mrtrustworthy.kafka.connect.googleanalytics.GASourceConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,15 +21,15 @@ public class GASourceTask extends SourceTask {
     // TODO use initialize() to resume https://kafka.apache.org/documentation/#connect_resuming
     private int offset;
 
-    public void setFetcher(GAReportFetcher fetcher) {
+    void setFetcher(GAReportFetcher fetcher) {
         this.fetcher = fetcher;
     }
 
-    public void setConfig(GAConnectorConfig config) {
+    void setConfig(GAConnectorConfig config) {
         this.config = config;
     }
 
-    public void setReportParser(ReportParser reportParser) {
+    void setReportParser(ReportParser reportParser) {
         this.reportParser = reportParser;
     }
 
@@ -41,7 +40,7 @@ public class GASourceTask extends SourceTask {
      */
     private String buildTopicName(){
         // replacing - with _ for avro subject names - do we actually need to do this or can subject/topic name differ?
-        return (this.config.getTopicName() + this.config.getViewId()).replace("-", "_");
+        return (this.config.getTopicPrefix() + this.config.getViewId()).replace("-", "_");
     }
 
 
@@ -52,18 +51,21 @@ public class GASourceTask extends SourceTask {
 
     @Override
     public void start(Map<String, String> props) {
-        this.config = GAConnectorConfig.fromConfigMap(props, GAConnectorConfig.ConfigType.TASK_CONFIG);
-        this.fetcher = new GAReportFetcher(this.config);
+        this.config = GAConnectorConfig.fromConfigMap(props);
+        try {
+            this.fetcher = new GAReportFetcher(config.getApplicationName(), config.getAuthzMode());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
         this.reportParser = new ReportParser();
     }
 
     @Override
     public List<SourceRecord> poll() throws InterruptedException {
         final ArrayList<SourceRecord> records = new ArrayList<>();
-        this.fetcher.maybeInitializeAnalyticsReporting();
         Report report;
         try {
-            report = this.fetcher.getReport();
+            report = this.fetcher.getReport(config.getViewId(), config.getMeasures(), config.getDimensions());
         } catch (IOException e) {
             log.error("Got IOException when polling for new records! Ignoring it, trying to proceed");
             return records;

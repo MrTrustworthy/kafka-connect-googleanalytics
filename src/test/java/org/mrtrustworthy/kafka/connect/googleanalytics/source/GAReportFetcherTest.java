@@ -26,52 +26,43 @@ class GAReportFetcherTest {
             assertTrue(false, "This should not throw - is the file there?");
         }
         Map<String, String> map = prop.entrySet().stream().collect(
-            Collectors.toMap(
-                es -> es.getKey().toString(),
-                es -> es.getValue().toString()
-            )
+                Collectors.toMap(
+                        es -> es.getKey().toString(),
+                        es -> es.getValue().toString()
+                )
         );
 
-        GAConnectorConfig conf = GAConnectorConfig.fromConfigMap(
-            map,
-            GAConnectorConfig.ConfigType.TASK_CONFIG
-        );
+        GAConnectorConfig conf = GAConnectorConfig.fromConfigMap(map);
         return conf;
     }
 
     @Test
-    void testAnalyticsReportingInitialization() throws IOException, GeneralSecurityException {
+    void testGAReportFetcherInitialization() throws Exception {
         GAConnectorConfig conf = getSampleConfig();
-        GAReportFetcher gafetcher = new GAReportFetcher(conf);
-        AnalyticsReporting rep = gafetcher.getAnalyticsService();
-        assertNotNull(rep);
+        GAReportFetcher gafetcher = new GAReportFetcher(conf.getApplicationName(), conf.getAuthzMode());
+        assertNotNull(gafetcher);
     }
 
 
     @Test
-    void testStructAssembly() {
-        try {
-            GAConnectorConfig conf = getSampleConfig();
-            GAReportFetcher gafetcher = new GAReportFetcher(conf);
-            GASourceTask task = new GASourceTask();
-            ReportParser repParser = new ReportParser();
-            task.setConfig(conf);
-            task.setFetcher(gafetcher);
-            task.setReportParser(repParser);
+    void testStructAssembly() throws Exception {
+        GAConnectorConfig conf = getSampleConfig();
+        GAReportFetcher gafetcher = new GAReportFetcher(conf.getApplicationName(), conf.getAuthzMode());
+        GASourceTask task = new GASourceTask();
+        ReportParser repParser = new ReportParser();
+        task.setConfig(conf);
+        task.setFetcher(gafetcher);
+        task.setReportParser(repParser);
 
-            gafetcher.maybeInitializeAnalyticsReporting();
-            Report report = gafetcher.getReport();
-            assertNotNull(report);
-            System.out.println("Report: " + report);
+        Report report = gafetcher.getReport(conf.getViewId(), conf.getMeasures(), conf.getDimensions());
+        assertNotNull(report);
+        System.out.println("Report: " + report);
 
-            repParser.maybeUpdateSchema(report, conf.getTopicName());
-            System.out.println("Schema: " + Objects.toString(repParser.getSchema()));
+        repParser.maybeUpdateSchema(report, conf.getTopicPrefix());
+        System.out.println("Schema: " + repParser.getSchema());
 
-            List<Struct> structs = repParser.createStructsOffReport(report);
-            System.out.println("Structs: " + Objects.toString(structs));
+        List<Struct> structs = repParser.createStructsOffReport(report);
+        System.out.println("Structs: " + structs);
 
-        } catch (IOException e) {
-            assertTrue(false);
-        }
     }
 }

@@ -38,7 +38,7 @@ public class GASourceConnector extends SourceConnector{
     @Override
     public void start(Map<String, String> map) {
         logger.info("Starting GASourceConnector");
-        this.config = GAConnectorConfig.fromConfigMap(map, GAConnectorConfig.ConfigType.CONNECTOR_CONFIG);
+        this.config = GAConnectorConfig.fromConfigMap(map);
     }
 
     @Override
