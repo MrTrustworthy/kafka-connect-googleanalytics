@@ -21,7 +21,7 @@ Well, automatically testing a library that requires two hard-to-mock dependencie
 4. Start kafka and schema registry by running `make run-kafka`.
 5. Run `make test-run` to start to send some data to kafka. In another terminal, run `make run-[avro-]consumer` to listen to the topic
 
-# Adaptation for AnaCred
+# Adaptation for AlphaCred
 
 ## GA
 
@@ -45,74 +45,6 @@ Confluent on GKE (Google Kubernetes Engine):
 * For understanding:
   - [Medium - GCP Compute Stack explained](https://medium.com/google-cloud/gcp-the-google-cloud-platform-compute-stack-explained-c4ebdccd299b)
   - [Kubernetes Doc - Concepts](https://kubernetes.io/docs/concepts/)
-
-
-NOTES after installing **Prometheus**:
-The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
-callous-porcupine-prometheus-server.default.svc.cluster.local
-
-
-Get the Prometheus server URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace default port-forward $POD_NAME 9090
-
-
-The Prometheus alertmanager can be accessed via port 80 on the following DNS name from within your cluster:
-callous-porcupine-prometheus-alertmanager.default.svc.cluster.local
-
-
-Get the Alertmanager URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=alertmanager" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace default port-forward $POD_NAME 9093
-
-
-The Prometheus PushGateway can be accessed via port 9091 on the following DNS name from within your cluster:
-callous-porcupine-prometheus-pushgateway.default.svc.cluster.local
-
-
-Get the PushGateway URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=pushgateway" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace default port-forward $POD_NAME 9091
-
-
-
-NOTES after installing **Grafana**:
-1. Get your 'admin' user password by running:
-
-   `kubectl get secret --namespace default inky-puffin-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
-    (ex.: oKW6Oo6fFUmFkR6h5JvMBBZHRl86kHG2xQGZMppE)
-
-2. The Grafana server can be accessed via port 80 on the following DNS name from within your cluster:
-
-   inky-puffin-grafana.default.svc.cluster.local
-
-   Get the Grafana URL to visit by running these commands in the same shell:
-
-     ```
-     export POD_NAME=$(kubectl get pods --namespace default -l "app=grafana,release=inky-puffin" -o jsonpath="{.items[0].metadata.name}")
-         kubectl --namespace default port-forward $POD_NAME 3000
-     ```
-
-3. Login with the password from step 1 and the username: admin
-
-Use "Confluent Cloud Professional"
-[setup](https://confluent.cloud/environments/t2563/clusters/lkc-lqzp2/integrations/cli)
-[quickstart](https://docs.confluent.io/current/quickstart/cloud-quickstart.html)
-
-API KEY & SECRET
-R2ZA6WUHKW7TMYBO
-X1Li+kMPVgJqVUHBO+s4b4f2AgwgZpARrcRZ3VvBQUfPfOM0TFDjmMqxbiNx5nvo
-
-After cloning the git repo of Confluent, run 
-```
-cd /Users/rgr/work/anacred/confluent/cp-docker-images/examples/cp-all-in-one-cloud
-$ ./ccloud-generate-env-vars.sh
-$ source ./delta_configs/env.delta
-docker-compose up -d --build
-```
-
-Finally check on [confluent.cloud](https://confluent.cloud) and on the [Control Center](http://localhost:9021)
-
 
 ### GA Connector
 
