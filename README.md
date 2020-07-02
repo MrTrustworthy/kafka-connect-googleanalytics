@@ -1,5 +1,7 @@
 # kafka-connect-googleanalytics
 
+# This repository is not maintained anymore and probably already outdated. Feel free to fork it and update it to new Kafka/GA/Java versions. Issues and PRs will not be worked on.
+
 ## Current TODO's
 
 * Crawl multiple views in one connector
